@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ลองสะกดชื่อเล่นเป็นภาษาอังกฤษ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes floatingCards {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(-45deg, #6b46c1, #9f7aea, #fbd38d, #f6e05e);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            backdrop-filter: blur(8px);
+            animation: floatingCards 6s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6b46c1, #f6e05e);
+            border-radius: 15px 15px 0 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #5b21b6;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 1.8rem;
+            position: relative;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .primary-btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #6b46c1, #9f7aea);
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(91, 33, 182, 0.3);
+            background: linear-gradient(135deg, #5b21b6, #8b5cf6);
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, #f472b6, #ec4899);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .secondary-btn:hover {
+            background: linear-gradient(135deg, #db2777, #be185d);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: fadeInScale 0.4s ease-out;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(249,250,251,0.95));
+        }
+
+        .fortune-item {
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background: rgba(243, 244, 246, 0.9);
+            animation: slideInFromRight 0.5s ease-out forwards;
+            opacity: 0;
+            transform: translateX(30px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(91, 33, 182, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .fortune-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .fortune-item:nth-child(1) { animation-delay: 0.1s; }
+        .fortune-item:nth-child(2) { animation-delay: 0.2s; }
+        .fortune-item:nth-child(3) { animation-delay: 0.3s; }
+        .fortune-item:nth-child(4) { animation-delay: 0.4s; }
+        .fortune-item:nth-child(5) { animation-delay: 0.5s; }
+
+        .letter {
+            color: #5b21b6;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 2px rgba(91, 33, 182, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .icon {
+            font-size: 1.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+        }
+
+        .primary-btn .icon {
+            font-size: 1.4rem;
+            margin-right: 0.5rem;
+        }
+
+        .secondary-btn .icon {
+            font-size: 1.2rem;
+            margin-right: 0.3rem;
+        }
+
+        .icon-spin {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            width: 4px;
+            height: 4px;
+            background: #f6e05e;
+            border-radius: 50%;
+            animation: sparkleAnimation 1s linear forwards;
+        }
+
+        @keyframes sparkleAnimation {
+            0% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--translateX), var(--translateY)) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .credit {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(91, 33, 182, 0.2);
+            font-size: 0.9rem;
+            color: #5b21b6;
+            animation: pulseCredit 3s ease-in-out infinite;
+        }
+
+        .credit a {
+            color: #6d28d9;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(91, 33, 182, 0.1);
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .credit a:hover {
+            background: rgba(91, 33, 182, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(91, 33, 182, 0.2);
+        }
+
+        @keyframes pulseCredit {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ลองสะกดชื่อเล่นเป็นภาษาอังกฤษ</h1>
+        <div class="input-group">
+            <input type="text" id="nameInput" placeholder="พิมพ์ชื่อเล่นเป็นภาษาอังกฤษ">
+        </div>
+        <button class="primary-btn" onclick="showFortune()">
+            <i class="bi bi-stars icon"></i>
+            <span>ดูคำทำนาย</span>
+        </button>
+        
+        <div class="credit">
+            จัดทำโดย: 
+            <a href="https://ballistic-outrageous-streetcar.glitch.me/?url=https://script.google.com/macros/s/AKfycbwFwpNjV0kItBIv-0pZdi307fZRh32H45D_53JVfXbMKZi7GkAEDCG4VQpKvpxtjATV/exec?openExternalBrowser=1&title=krunidMenu" target="_blank">
+                <i class="bi bi-person-heart icon" style="vertical-align: middle; margin-right: 4px;"></i>
+                ครูนิด ศิษย์หลวงพ่อเสือ
+            </a>
+        </div>
+    </div>
+
+    <div id="fortuneModal" class="modal">
+        <div class="modal-content">
+            <h2 style="text-align: center; color: #5b21b6; margin-bottom: 1.5rem">
+                <i class="bi bi-magic icon" style="margin-right: 8px; vertical-align: middle;"></i>
+                คำทำนายสำหรับ "<span id="displayName"></span>"
+            </h2>
+            <div id="fortuneResult"></div>
+            <div class="modal-buttons">
+                <button class="secondary-btn" onclick="reset()">
+                    <i class="bi bi-arrow-counterclockwise icon"></i>
+                    <span>เริ่มใหม่</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Document ready function
+        document.addEventListener('DOMContentLoaded', function() {
+            // Any initialization code can go here
+        });
+
+        const meanings = {
+            'a': 'หนวดดลี',
+            'b': 'ข้ามสิ่ง',
+            'c': 'ขี้งอล',
+            'd': 'หยิ่ง',
+            'e': 'เจ้าชู้',
+            'f': 'เอาแต่ใจ',
+            'g': 'วีรบุรุษ',
+            'h': 'สุภาพ',
+            'i': 'เจ้าชี่',
+            'j': 'ขี้ซึ่ง',
+            'k': 'ปากจัด',
+            'l': 'เท่',
+            'm': 'เยอะ',
+            'n': 'ขี้งอล',
+            'o': 'ขี้น',
+            'p': 'มั่นคง',
+            'q': 'ผู้นำ',
+            'r': 'มีเสน่ห์',
+            's': 'สร้างสรรค์',
+            't': 'ฉลาด',
+            'u': 'รู้เดียว',
+            'v': 'แสบ',
+            'w': 'ติดมาก',
+            'x': 'ผู้ล่า',
+            'y': 'เร็ด',
+            'z': 'ซ่า'
+        };
+
+        const modal = document.getElementById('fortuneModal');
+        const nameInput = document.getElementById('nameInput');
+
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = `${x}px`;
+            sparkle.style.top = `${y}px`;
+            sparkle.style.setProperty('--translateX', `${Math.random() * 100 - 50}px`);
+            sparkle.style.setProperty('--translateY', `${Math.random() * 100 - 50}px`);
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+        }
+
+        function showFortune() {
+            const name = nameInput.value.trim().toLowerCase();
+            if (!name) return;
+
+            document.getElementById('displayName').textContent = name;
+            const fortuneResult = document.getElementById('fortuneResult');
+            fortuneResult.innerHTML = '';
+
+            for (const letter of name) {
+                if (meanings[letter]) {
+                    const fortuneItem = document.createElement('div');
+                    fortuneItem.className = 'fortune-item';
+                    fortuneItem.innerHTML = `<span class="letter">${letter.toUpperCase()}</span>: ${meanings[letter]}`;
+                    fortuneResult.appendChild(fortuneItem);
+                }
+            }
+
+            modal.style.display = 'flex';
+
+            // Add sparkle effect on show
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const modalContent = document.querySelector('.modal-content');
+                    const rect = modalContent.getBoundingClientRect();
+                    const x = rect.left + Math.random() * rect.width;
+                    const y = rect.top + Math.random() * rect.height;
+                    createSparkle(x, y);
+                }, i * 100);
+            }
+        }
+
+        function reset() {
+            nameInput.value = '';
+            modal.style.display = 'none';
+            
+            // Add sparkle effect on reset
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    createSparkle(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight
+                    );
+                }, i * 100);
+            }
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                showFortune();
+            }
+        });
+
+        // Add hover effect for fortune items
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('.fortune-item')) {
+                const rect = e.target.closest('.fortune-item').getBoundingClientRect();
+                createSparkle(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            }
+        });
+    </script>
+</body>
+</html>
